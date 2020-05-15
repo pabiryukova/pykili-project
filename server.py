@@ -36,6 +36,7 @@ def send():
         messages.append(new_message)
 
         return {'ok' : True}
-    
+    else:
+        return {'ok': False}
 if __name__ == "__main__":
     app.run()
