@@ -1,42 +1,52 @@
 from flask import Flask, request
-app = Flask(__name__)
-messages = [{'username': 'jack', 'text': 'hello'}]
+import time
 
-users= {}
+app = Flask(__name__)
+messages = []
+users = {}  # {'username':password}
+
 
 @app.route('/')
 def hello():
-    return 'hello, world'
+    return 'Добро пожаловать в чат!'
 
-@app.route('/status')
-def status():
-    return {'status':True}
-    
-@app.route('/history')
-def history():
-    return {'messages': messages}
 
-@app.route('/send', methods=['POST'])
-def send():
-    """ request = {'username': 'str'. 'password': 'str','text:'str''}
-        response = {'ok': true}"""
-    data = request.json
+@app.route('/authorisation', methods=['POST'])
+# request = {'username': str, 'password': str}
+def autho():
+    data = request.json()
     username = data['username']
-    text = data['text']
     password = data['password']
-    
-    if username in users:
-        real_password = users[username]
-        if real_password != password:
-            return {'ok': False}
+    for key in users:
+        if username == key:
+            if password == users[username]:
+                return {'ok': success}
+            else:
+                return {'ok': error}
         else:
             users[username] = password
-            
-        new_message = {'username' : username, 'text' : text}
-        messages.append(new_message)
+            return {'ok': success}
 
-        return {'ok' : True}
-    else:
-        return {'ok': False}
-if __name__ == "__main__":
+
+@app.route('/chat')
+def chat():
+    return {'chat': messages}
+
+
+@app.route('/send', methods=['POST'])
+# request = {'username': str, 'addressee' = str, 'text' = str}
+def send():
+    data = request.json()
+    username = data['username']
+    addressee = data['addressee']
+    text = data['text']
+    timestamp = time.ctime()
+
+    new_message = {'username': username, 'addressee': addressee, 'text': text, 'timestamp': timestamp}
+    messages.append(new_message)
+
+    return {'ok': success}
+
+
+if __name__ == '__main__':
     app.run()
