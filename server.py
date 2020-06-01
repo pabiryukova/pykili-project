@@ -14,7 +14,7 @@ def hello():
 @app.route('/authorisation', methods=['POST'])
 # request = {'username': str, 'password': str}
 def autho():
-    data = request.json()
+    data = request.json
     username = data['username']
     password = data['password']
     for key in users:
@@ -36,7 +36,7 @@ def chat():
 @app.route('/send', methods=['POST'])
 # request = {'username': str, 'addressee' = str, 'text' = str}
 def send():
-    data = request.json()
+    data = request.json
     username = data['username']
     addressee = data['addressee']
     text = data['text']
